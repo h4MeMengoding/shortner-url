@@ -1,0 +1,9 @@
+{
+  "buildCommand": "next build",
+  "cleanUrls": true,
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "github": {
+    "silent": true
+  }
+}

@@ -31,10 +31,8 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async redirect({ url, baseUrl }) {
-      // Redirect to dashboard after successful login
-      if (url.startsWith('/')) return `${baseUrl}/dashboard`;
-      else if (new URL(url).origin === baseUrl) return url;
+    async redirect({ baseUrl }) {
+      // Always redirect to dashboard after login
       return `${baseUrl}/dashboard`;
     },
   },
