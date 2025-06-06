@@ -31,8 +31,18 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async redirect({ baseUrl }) {
-      // Always redirect to dashboard after login
+    async redirect({ url, baseUrl }) {
+      // Handle redirect logic properly for production
+      if (url.startsWith('/dashboard')) {
+        return `${baseUrl}/dashboard`;
+      }
+      if (url.includes('callbackUrl')) {
+        const callbackUrl = new URL(url).searchParams.get('callbackUrl');
+        if (callbackUrl?.includes('/dashboard')) {
+          return `${baseUrl}/dashboard`;
+        }
+      }
+      // Default fallback
       return `${baseUrl}/dashboard`;
     },
   },

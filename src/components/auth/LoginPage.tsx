@@ -8,7 +8,7 @@ import { Chrome, Link2, Shield, Zap } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' });
+    signIn('google', { callbackUrl: `${window.location.origin}/dashboard` });
   };
 
   return (
