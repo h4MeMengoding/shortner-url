@@ -58,13 +58,12 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { title, description, isActive, expiresAt } = body;
+    const { description, isActive, expiresAt } = body;
 
     const params = await context.params;
     await connectDB();
 
     const updateData: Record<string, unknown> = {};
-    if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (isActive !== undefined) updateData.isActive = isActive;
     if (expiresAt !== undefined) {
@@ -90,7 +89,6 @@ export async function PATCH(
       shortCode: url.shortCode,
       customCode: url.customCode,
       shortUrl: `${process.env.BASE_URL}/${url.shortCode}`,
-      title: url.title,
       description: url.description,
       clicks: url.clicks,
       createdAt: url.createdAt.toISOString(),

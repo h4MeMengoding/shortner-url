@@ -1,13 +1,11 @@
 export interface CreateUrlRequest {
   originalUrl: string;
-  customCode?: string;
-  title?: string;
+  shortLink?: string;
   description?: string;
   expiresAt?: string;
 }
 
 export interface UpdateUrlRequest {
-  title?: string | null;
   description?: string | null;
   expiresAt?: string | null;
   isActive?: boolean;
@@ -19,7 +17,6 @@ export interface UrlResponse {
   shortCode: string;
   customCode?: string;
   shortUrl: string;
-  title?: string;
   description?: string;
   clicks: number;
   createdAt: string;

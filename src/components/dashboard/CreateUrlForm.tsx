@@ -5,17 +5,16 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Link, Loader2, Copy, ExternalLink, QrCode } from 'lucide-react';
+import { Link, Loader2, Copy, ExternalLink, QrCode, Shuffle } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import QRCodeDisplay from './QRCodeDisplay';
 import { CreateUrlRequest, UrlResponse } from '@/types';
-import { isValidUrl, copyToClipboard } from '@/lib/utils';
+import { isValidUrl, copyToClipboard, generateShortCode } from '@/lib/utils';
 
 const CreateUrlForm: React.FC = () => {
   const [formData, setFormData] = useState<CreateUrlRequest>({
     originalUrl: '',
-    customCode: '',
-    title: '',
+    shortLink: generateShortCode(), // Default generated short code
     description: '',
     expiresAt: '',
   });
@@ -35,12 +34,12 @@ const CreateUrlForm: React.FC = () => {
       newErrors.originalUrl = 'Please enter a valid URL';
     }
 
-    if (formData.customCode && (formData.customCode.length < 3 || formData.customCode.length > 50)) {
-      newErrors.customCode = 'Custom code must be between 3 and 50 characters';
+    if (formData.shortLink && (formData.shortLink.length < 3 || formData.shortLink.length > 50)) {
+      newErrors.shortLink = 'Short link must be between 3 and 50 characters';
     }
 
-    if (formData.customCode && !/^[a-zA-Z0-9_-]+$/.test(formData.customCode)) {
-      newErrors.customCode = 'Custom code can only contain letters, numbers, hyphens, and underscores';
+    if (formData.shortLink && !/^[a-zA-Z0-9_-]+$/.test(formData.shortLink)) {
+      newErrors.shortLink = 'Short link can only contain letters, numbers, hyphens, and underscores';
     }
 
     setErrors(newErrors);
@@ -71,8 +70,7 @@ const CreateUrlForm: React.FC = () => {
         // Reset form
         setFormData({
           originalUrl: '',
-          customCode: '',
-          title: '',
+          shortLink: generateShortCode(), // Generate new default short code
           description: '',
           expiresAt: '',
         });
@@ -91,6 +89,14 @@ const CreateUrlForm: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleRandomizeShortLink = () => {
+    const newShortCode = generateShortCode();
+    setFormData(prev => ({ ...prev, shortLink: newShortCode }));
+    if (errors.shortLink) {
+      setErrors(prev => ({ ...prev, shortLink: '' }));
     }
   };
 
@@ -132,23 +138,39 @@ const CreateUrlForm: React.FC = () => {
               icon={<ExternalLink size={16} />}
             />
 
-            {/* Custom Code */}
-            <Input
-              label="Custom Code (Optional)"
-              placeholder="my-custom-link"
-              value={formData.customCode}
-              onChange={(e) => handleInputChange('customCode', e.target.value)}
-              error={errors.customCode}
-              icon={<Link size={16} />}
-            />
-
-            {/* Title */}
-            <Input
-              label="Title (Optional)"
-              placeholder="My Awesome Link"
-              value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-            />
+            {/* Short Link */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Short Link (Optional)
+              </label>
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-400 text-sm">{process.env.NEXT_PUBLIC_BASE_URL || 'https://yoursite.com'}/</span>
+                  </div>
+                  <Input
+                    placeholder="my-custom-link"
+                    value={formData.shortLink}
+                    onChange={(e) => handleInputChange('shortLink', e.target.value)}
+                    error={errors.shortLink}
+                    className="pl-32"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRandomizeShortLink}
+                  className="flex items-center gap-2 px-3 py-2"
+                >
+                  <Shuffle size={16} />
+                  Random
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500">
+                Leave empty to use a randomly generated code, or customize it to your preference
+              </p>
+            </div>
 
             {/* Description */}
             <Textarea
@@ -247,12 +269,6 @@ const CreateUrlForm: React.FC = () => {
                   {createdUrl.originalUrl}
                 </p>
               </div>
-              {createdUrl.title && (
-                <div>
-                  <span className="text-gray-400">Title:</span>
-                  <p className="text-gray-100 mt-1">{createdUrl.title}</p>
-                </div>
-              )}
               {createdUrl.description && (
                 <div className="md:col-span-2">
                   <span className="text-gray-400">Description:</span>

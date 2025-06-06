@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: CreateUrlRequest = await request.json();
-    const { originalUrl, customCode, title, description, expiresAt } = body;
+    const { originalUrl, shortLink, description, expiresAt } = body;
 
     // Validate original URL
     if (!originalUrl || !isValidUrl(originalUrl)) {
@@ -28,12 +28,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate custom code if provided
-    if (customCode && !validateCustomCode(customCode)) {
-      return NextResponse.json(
-        { success: false, error: 'Custom code must be 3-50 characters and contain only letters, numbers, hyphens, and underscores' },
-        { status: 400 }
-      );
+    // Validate short link if provided (this will be the custom part of the URL)
+    let customCode: string | undefined;
+    if (shortLink) {
+      // Extract the short code from the full URL if provided, or use as-is
+      const shortCodeMatch = shortLink.match(/\/([^\/]+)$/);
+      customCode = shortCodeMatch ? shortCodeMatch[1] : shortLink;
+      
+      if (!validateCustomCode(customCode)) {
+        return NextResponse.json(
+          { success: false, error: 'Short link must be 3-50 characters and contain only letters, numbers, hyphens, and underscores' },
+          { status: 400 }
+        );
+      }
     }
 
     await connectDB();
@@ -80,7 +87,6 @@ export async function POST(request: NextRequest) {
       shortCode,
       customCode: customCode || undefined,
       userId: session.user.id,
-      title,
       description,
       expiresAt: expiresAt ? new Date(expiresAt) : undefined,
     });
@@ -93,7 +99,6 @@ export async function POST(request: NextRequest) {
       shortCode: newUrl.shortCode,
       customCode: newUrl.customCode,
       shortUrl: `${process.env.BASE_URL}/${newUrl.shortCode}`,
-      title: newUrl.title,
       description: newUrl.description,
       clicks: newUrl.clicks,
       createdAt: newUrl.createdAt.toISOString(),
@@ -143,7 +148,6 @@ export async function GET(request: NextRequest) {
       shortCode: url.shortCode,
       customCode: url.customCode,
       shortUrl: `${process.env.BASE_URL}/${url.shortCode}`,
-      title: url.title,
       description: url.description,
       clicks: url.clicks,
       createdAt: url.createdAt.toISOString(),

@@ -17,11 +17,9 @@ interface EditUrlFormProps {
 
 const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdate }) => {
   const [formData, setFormData] = useState<{
-    title: string;
     description: string;
     expiresAt: string;
   }>({
-    title: '',
     description: '',
     expiresAt: '',
   });
@@ -31,7 +29,6 @@ const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdat
   useEffect(() => {
     if (url) {
       setFormData({
-        title: url.title || '',
         description: url.description || '',
         expiresAt: url.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : '',
       });
@@ -40,10 +37,6 @@ const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdat
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (formData.title && formData.title.length > 100) {
-      newErrors.title = 'Title must be less than 100 characters';
-    }
 
     if (formData.description && formData.description.length > 500) {
       newErrors.description = 'Description must be less than 500 characters';
@@ -70,7 +63,6 @@ const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdat
 
     try {
       const updateData: UpdateUrlRequest = {
-        title: formData.title || null,
         description: formData.description || null,
         expiresAt: formData.expiresAt || null,
       };
@@ -108,7 +100,6 @@ const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdat
 
   const handleClose = () => {
     setFormData({
-      title: url?.title || '',
       description: url?.description || '',
       expiresAt: url?.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : '',
     });
@@ -137,21 +128,6 @@ const EditUrlForm: React.FC<EditUrlFormProps> = ({ url, isOpen, onClose, onUpdat
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Title */}
-        <div className="space-y-2">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-300">
-            Title <span className="text-gray-500">(optional)</span>
-          </label>
-          <Input
-            id="title"
-            type="text"
-            value={formData.title || ''}
-            onChange={(e) => handleInputChange('title', e.target.value)}
-            placeholder="Give your URL a memorable title"
-            error={errors.title}
-          />
         </div>
 
         {/* Description */}

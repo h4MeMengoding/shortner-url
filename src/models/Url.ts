@@ -5,7 +5,6 @@ export interface IUrl extends Document {
   shortCode: string;
   customCode?: string;
   userId: string;
-  title?: string;
   description?: string;
   clicks: number;
   createdAt: Date;
@@ -34,10 +33,6 @@ const UrlSchema = new Schema<IUrl>({
     type: String,
     required: true,
     index: true,
-  },
-  title: {
-    type: String,
-    trim: true,
   },
   description: {
     type: String,

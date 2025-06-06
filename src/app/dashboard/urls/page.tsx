@@ -107,9 +107,9 @@ export default function UrlsPage() {
   };
 
   const filteredUrls = urls.filter(url =>
-    url.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     url.originalUrl.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    url.shortCode.toLowerCase().includes(searchTerm.toLowerCase())
+    url.shortCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    url.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -183,17 +183,11 @@ export default function UrlsPage() {
                   {/* URL Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      {url.title ? (
-                        <h3 className="font-semibold text-gray-100 truncate">
-                          {url.title}
-                        </h3>
-                      ) : (
-                        <h3 className="font-semibold text-gray-100 truncate">
-                          {url.originalUrl.length > 50 
-                            ? `${url.originalUrl.substring(0, 50)}...` 
-                            : url.originalUrl}
-                        </h3>
-                      )}
+                      <h3 className="font-semibold text-gray-100 truncate">
+                        {url.originalUrl.length > 50 
+                          ? `${url.originalUrl.substring(0, 50)}...` 
+                          : url.originalUrl}
+                      </h3>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         url.isActive 
                           ? 'bg-green-900/30 text-green-400 border border-green-700' 
