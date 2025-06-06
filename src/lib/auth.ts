@@ -19,9 +19,13 @@ export const authOptions: NextAuthOptions = {
     error: '/',
   },
   callbacks: {
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.id = user.id;
+    async session({ session, user, token }) {
+      if (session.user) {
+        if (user) {
+          session.user.id = user.id;
+        } else if (token) {
+          session.user.id = token.sub as string;
+        }
       }
       return session;
     },
@@ -32,21 +36,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async redirect({ url, baseUrl }) {
-      // Handle redirect logic properly for production
-      if (url.startsWith('/dashboard')) {
-        return `${baseUrl}/dashboard`;
+      // If the URL starts with the base URL, it's safe to return
+      if (url.startsWith(baseUrl)) {
+        return url;
       }
-      if (url.includes('callbackUrl')) {
-        const callbackUrl = new URL(url).searchParams.get('callbackUrl');
-        if (callbackUrl?.includes('/dashboard')) {
-          return `${baseUrl}/dashboard`;
-        }
-      }
-      // Default fallback
+      // Default redirect to dashboard
       return `${baseUrl}/dashboard`;
     },
   },
   session: {
-    strategy: 'database',
+    strategy: 'jwt', // Change to JWT strategy for better client-side session handling
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 };

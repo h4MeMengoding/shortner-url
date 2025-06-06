@@ -11,7 +11,13 @@ import { UrlResponse } from '@/types';
 import EditUrlForm from '@/components/dashboard/EditUrlForm';
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = '/'; // Redirect to login if unauthenticated
+    }
+  });
+  
   const [urls, setUrls] = useState<UrlResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
@@ -19,8 +25,10 @@ export default function DashboardPage() {
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    fetchUrls();
-  }, []);
+    if (status === 'authenticated') {
+      fetchUrls();
+    }
+  }, [status]);
 
   const fetchUrls = async () => {
     try {

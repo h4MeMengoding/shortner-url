@@ -11,6 +11,7 @@
     "BASE_URL": "https://s.hame.my.id",
     "NEXT_PUBLIC_BASE_URL": "https://s.hame.my.id"
   },
+  "rewrites": [],
   "headers": [
     {
       "source": "/(.*)",
