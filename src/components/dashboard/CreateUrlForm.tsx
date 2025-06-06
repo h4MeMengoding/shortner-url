@@ -141,34 +141,50 @@ const CreateUrlForm: React.FC = () => {
             {/* Short Link */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-300">
-                Short Link (Optional)
+                Short Link
               </label>
-              <div className="flex gap-2">
+              
+              {/* Input and Button Row */}
+              <div className="flex items-stretch gap-3">
                 <div className="flex-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-400 text-sm">{process.env.NEXT_PUBLIC_BASE_URL || 'https://yoursite.com'}/</span>
+                  <div className="flex">
+                    {/* Base URL part (read-only) */}
+                    <div className="bg-gray-700 border border-r-0 border-gray-600 rounded-l-lg px-3 py-2.5 text-gray-300 font-mono text-sm flex items-center">
+                      {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/
+                    </div>
+                    {/* Custom part (editable) */}
+                    <input
+                      type="text"
+                      placeholder="custom-link"
+                      value={formData.shortLink}
+                      onChange={(e) => handleInputChange('shortLink', e.target.value)}
+                      className={`flex-1 px-3 py-2.5 bg-slate-800 border rounded-r-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors font-mono text-sm ${
+                        errors.shortLink 
+                          ? 'border-red-500 focus:ring-red-500' 
+                          : 'border-gray-600 hover:border-gray-500'
+                      }`}
+                    />
                   </div>
-                  <Input
-                    placeholder="my-custom-link"
-                    value={formData.shortLink}
-                    onChange={(e) => handleInputChange('shortLink', e.target.value)}
-                    error={errors.shortLink}
-                    className="pl-32"
-                  />
                 </div>
+                {/* Random button */}
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
                   onClick={handleRandomizeShortLink}
-                  className="flex items-center gap-2 px-3 py-2"
+                  className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap bg-slate-800 hover:bg-slate-700 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-gray-100"
+                  title="Generate random short code"
                 >
                   <Shuffle size={16} />
                   Random
                 </Button>
               </div>
+              
+              {errors.shortLink && (
+                <p className="text-sm text-red-400">{errors.shortLink}</p>
+              )}
+              
               <p className="text-xs text-gray-500">
-                Leave empty to use a randomly generated code, or customize it to your preference
+                Customize your short link or click Random to generate one automatically
               </p>
             </div>
 
