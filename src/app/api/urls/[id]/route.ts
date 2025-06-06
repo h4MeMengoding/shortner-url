@@ -6,7 +6,7 @@ import Url from '@/models/Url';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,6 +18,7 @@ export async function DELETE(
       );
     }
 
+    const params = await context.params;
     await connectDB();
 
     const url = await Url.findOneAndDelete({
@@ -44,7 +45,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -57,17 +58,22 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { title, description, isActive } = body;
+    const { title, description, isActive, expiresAt } = body;
 
+    const params = await context.params;
     await connectDB();
+
+    const updateData: Record<string, unknown> = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (isActive !== undefined) updateData.isActive = isActive;
+    if (expiresAt !== undefined) {
+      updateData.expiresAt = expiresAt ? new Date(expiresAt) : null;
+    }
 
     const url = await Url.findOneAndUpdate(
       { _id: params.id, userId: session.user.id },
-      { 
-        ...(title !== undefined && { title }),
-        ...(description !== undefined && { description }),
-        ...(isActive !== undefined && { isActive }),
-      },
+      updateData,
       { new: true }
     );
 

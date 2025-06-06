@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, BarChart3, Plus, Home } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import NextLink from 'next/link';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -55,8 +56,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-16 left-0 z-30 w-64 h-[calc(100vh-4rem)] bg-navy-800 border-r border-gray-700 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          'fixed top-16 left-0 z-30 w-64 h-[calc(100vh-4rem)] bg-navy-800 border-r border-gray-700 transition-transform duration-300 ease-in-out',
+          'lg:translate-x-0', // Always visible on large screens
+          isOpen ? 'translate-x-0' : '-translate-x-full' // Mobile responsive
         )}
       >
         <div className="flex flex-col h-full">
@@ -85,14 +87,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
           {/* Create URL Button */}
           <div className="p-4 border-t border-gray-700">
-            <a
-              href="/dashboard/create"
-              className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-              onClick={onClose}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Short URL
-            </a>
+            <NextLink href="/dashboard/create">
+              <div
+                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                onClick={onClose}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Short URL
+              </div>
+            </NextLink>
           </div>
         </div>
       </aside>

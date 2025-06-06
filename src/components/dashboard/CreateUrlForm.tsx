@@ -79,7 +79,8 @@ const CreateUrlForm: React.FC = () => {
       } else {
         setErrors({ submit: data.error || 'Failed to create short URL' });
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Create URL error:', error);
       setErrors({ submit: 'Network error. Please try again.' });
     } finally {
       setLoading(false);

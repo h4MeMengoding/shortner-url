@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
@@ -40,7 +40,7 @@ export async function GET() {
       .lean();
 
     const recentUrls = recentUrlsData.map(url => ({
-      id: (url._id as any).toString(),
+      id: (url._id as string).toString(),
       originalUrl: url.originalUrl,
       shortCode: url.shortCode,
       customCode: url.customCode,

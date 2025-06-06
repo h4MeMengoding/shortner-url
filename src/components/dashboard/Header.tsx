@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { LogOut, User, Menu, X, Link2 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import Image from 'next/image';
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -47,9 +47,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle, isMobileMenuOpen }) => {
               className="flex items-center space-x-3 text-gray-100 hover:text-blue-400 transition-colors"
             >
               {session?.user?.image ? (
-                <img
+                <Image
                   src={session.user.image}
                   alt={session.user.name || 'User'}
+                  width={32}
+                  height={32}
                   className="w-8 h-8 rounded-full"
                 />
               ) : (

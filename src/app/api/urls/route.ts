@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Url from '@/models/Url';
 import { generateShortCode, isValidUrl, normalizeUrl, validateCustomCode } from '@/lib/utils';
-import { CreateUrlRequest, ApiResponse, UrlResponse } from '@/types';
+import { CreateUrlRequest, UrlResponse } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
     const total = await Url.countDocuments({ userId: session.user.id });
 
     const response = urls.map(url => ({
-      id: (url._id as any).toString(),
+      id: (url._id as string).toString(),
       originalUrl: url.originalUrl,
       shortCode: url.shortCode,
       customCode: url.customCode,

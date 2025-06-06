@@ -62,6 +62,5 @@ const UrlSchema = new Schema<IUrl>({
 
 // Index for efficient queries
 UrlSchema.index({ userId: 1, createdAt: -1 });
-UrlSchema.index({ shortCode: 1 });
 
 export default mongoose.models.Url || mongoose.model<IUrl>('Url', UrlSchema);

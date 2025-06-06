@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { BarChart3, Link, MousePointer, TrendingUp } from 'lucide-react';
 import { UserStats } from '@/types';
 
@@ -30,16 +30,16 @@ const StatsCards: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
+          <Card key={i} className="animate-pulse w-full">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <div className="h-4 bg-gray-700 rounded w-16 mb-2"></div>
                   <div className="h-8 bg-gray-700 rounded w-12"></div>
                 </div>
-                <div className="h-8 w-8 bg-gray-700 rounded"></div>
+                <div className="h-8 w-8 bg-gray-700 rounded flex-shrink-0"></div>
               </div>
             </CardContent>
           </Card>
@@ -81,12 +81,12 @@ const StatsCards: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
       {statsData.map((stat, index) => (
-        <Card key={index} className="animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+        <Card key={index} className="animate-slide-up w-full" style={{ animationDelay: `${index * 100}ms` }}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1">
                 <p className="text-sm font-medium text-gray-400 mb-2">
                   {stat.title}
                 </p>
@@ -94,7 +94,7 @@ const StatsCards: React.FC = () => {
                   {stat.value.toLocaleString()}{stat.suffix}
                 </p>
               </div>
-              <div className={`p-3 rounded-lg ${stat.bgColor}`}>
+              <div className={`p-3 rounded-lg ${stat.bgColor} flex-shrink-0`}>
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
               </div>
             </div>

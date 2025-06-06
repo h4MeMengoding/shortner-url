@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Download, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface QRCodeDisplayProps {
   isOpen: boolean;
@@ -21,13 +22,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && !qrCode) {
-      fetchQRCode();
-    }
-  }, [isOpen, qrCode]);
-
-  const fetchQRCode = async () => {
+  const fetchQRCode = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/urls/${urlId}/qr`);
@@ -41,7 +36,13 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [urlId]);
+
+  useEffect(() => {
+    if (isOpen && !qrCode) {
+      fetchQRCode();
+    }
+  }, [isOpen, qrCode, fetchQRCode]);
 
   const downloadQRCode = () => {
     if (qrCode) {
@@ -67,9 +68,11 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
         ) : qrCode ? (
           <>
             <div className="bg-white p-4 rounded-lg inline-block">
-              <img
+              <Image
                 src={qrCode}
                 alt="QR Code"
+                width={256}
+                height={256}
                 className="w-64 h-64"
               />
             </div>

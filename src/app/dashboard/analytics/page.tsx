@@ -126,7 +126,7 @@ export default function AnalyticsPage() {
                 Advanced Analytics Coming Soon
               </h3>
               <p className="text-gray-300 text-sm">
-                We're working on advanced analytics features including detailed click tracking, 
+                We&apos;re working on advanced analytics features including detailed click tracking, 
                 referrer analysis, geographic data, device information, and custom date ranges. 
                 Stay tuned for these exciting updates!
               </p>

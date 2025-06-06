@@ -6,6 +6,13 @@ export interface CreateUrlRequest {
   expiresAt?: string;
 }
 
+export interface UpdateUrlRequest {
+  title?: string | null;
+  description?: string | null;
+  expiresAt?: string | null;
+  isActive?: boolean;
+}
+
 export interface UrlResponse {
   id: string;
   originalUrl: string;
@@ -28,7 +35,7 @@ export interface UserStats {
   recentUrls: UrlResponse[];
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;

@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import QRCodeDisplay from '@/components/dashboard/QRCodeDisplay';
+import EditUrlForm from '@/components/dashboard/EditUrlForm';
 import { 
   Copy, 
-  ExternalLink, 
   QrCode, 
   Trash2, 
   Edit, 
@@ -27,6 +27,7 @@ export default function UrlsPage() {
   const [selectedUrl, setSelectedUrl] = useState<UrlResponse | null>(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -99,6 +100,10 @@ export default function UrlsPage() {
     } catch (error) {
       console.error('Error updating URL:', error);
     }
+  };
+
+  const handleUpdateUrl = (updatedUrl: UrlResponse) => {
+    setUrls(urls.map(u => u.id === updatedUrl.id ? updatedUrl : u));
   };
 
   const filteredUrls = urls.filter(url =>
@@ -264,6 +269,17 @@ export default function UrlsPage() {
                         <div className="absolute right-0 mt-2 w-48 bg-navy-800 border border-gray-700 rounded-lg shadow-lg py-1 z-10">
                           <button
                             onClick={() => {
+                              setSelectedUrl(url);
+                              setShowEditModal(true);
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-100 hover:bg-navy-700 flex items-center gap-2"
+                          >
+                            <Edit size={16} />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => {
                               handleToggleActive(url);
                               setActiveDropdown(null);
                             }}
@@ -301,6 +317,19 @@ export default function UrlsPage() {
           onClose={() => setShowQRCode(false)}
           url={selectedUrl.shortUrl}
           urlId={selectedUrl.id}
+        />
+      )}
+
+      {/* Edit URL Modal */}
+      {selectedUrl && (
+        <EditUrlForm
+          url={selectedUrl}
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedUrl(null);
+          }}
+          onUpdate={handleUpdateUrl}
         />
       )}
 
